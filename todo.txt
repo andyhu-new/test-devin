@@ -1,0 +1,15 @@
+Pivot Table Implementation Todo List:
+
+[x] Table 1: "Goal Summary"
+    - Sheet Name: Goal Summary
+    - Filters: Goal Set
+    - Rows: Team
+    - Columns: Status
+    - Values: Count of ID
+
+[x] Table 2: "Count by Quarter"
+    - Sheet Name: Count by Quarter
+    - Filters: Goal Set
+    - Rows: Team, Status
+    - Columns: Quarter
+    - Values: Count of ID
