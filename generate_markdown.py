@@ -4,7 +4,11 @@ import sys
 
 def get_status_order():
     """Return the ordered list of status values."""
-    return ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow', 'Green']
+    return ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow', 'Green', 'New']
+
+def is_standard_status(status):
+    """Check if the status is one of the standard statuses."""
+    return status in ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow', 'Green']
 
 def is_within_past_weeks(date_str, weeks=3):
     """Check if the given date is within the specified number of weeks from now."""
@@ -31,6 +35,10 @@ def should_include_item(row):
     
     # For Green items - check Created date
     if status == 'Green':
+        return is_within_past_weeks(row['Created'])
+    
+    # For non-standard statuses - check Created date
+    if not is_standard_status(status):
         return is_within_past_weeks(row['Created'])
     
     return False
@@ -85,14 +93,19 @@ def generate_markdown(input_file, output_file):
         
         # Process each status group in specified order
         for status in get_status_order():
-            status_group = df[df['Status'] == status]
+            if status == 'New':
+                # Group all non-standard statuses
+                status_group = df[~df['Status'].apply(is_standard_status)]
+            else:
+                status_group = df[df['Status'] == status]
             
             # Filter items based on criteria
             status_group = status_group[status_group.apply(should_include_item, axis=1)]
             
             if len(status_group) > 0:
                 # Add group header
-                markdown_content.append(f"### {status} ({len(status_group)} goals)\n")
+                display_status = status if status != 'New' else 'New'
+                markdown_content.append(f"### {display_status} ({len(status_group)} goals)\n")
                 
                 # Add items
                 for _, row in status_group.iterrows():
