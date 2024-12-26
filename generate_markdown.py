@@ -47,8 +47,8 @@ def format_item(row):
     """Format a single item according to the specified markdown template."""
     markdown = []
     
-    # Header line
-    header = f"** [{row['Status']}] {row['Goal Set']} Goal {row['ID']} \"{row['Title']}\" on {row['Date']}**"
+    # Header line with clickable ID link and bold formatting
+    header = f"__ [{row['Status']}] {row['Goal Set']} Goal [{row['ID']}](https://kingpin.amazon.com/#/items/{row['ID']}) {row['Title']} on {row['Date']}__"
     markdown.append(header)
     
     # Description
