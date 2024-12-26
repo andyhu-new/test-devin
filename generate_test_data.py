@@ -9,9 +9,10 @@ four_weeks_ago = now - timedelta(weeks=4)
 # Create test DataFrame with meaningful data for pivot table and markdown analysis
 df = pd.DataFrame({
     'Type': ['Project'] * 15,
-    'Status': ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red',
-               'Yellow', 'Green', 'Completed', 'Completed Late', 'DNM',
-               'Cancelled', 'Red', 'Yellow', 'Green', 'Green'],
+    'Status': ['Completed', 'Red', 'Yellow', 'Green',  # Include only some statuses
+               'Red', 'Yellow', 'Green', 'Completed',
+               'Red', 'Yellow', 'Green', 'Green',
+               'Red', 'Yellow', 'Green'],  # No DNM, Completed Late, or Cancelled
     'Title': [f'Sample Goal {i}' for i in range(1, 16)],
     'Description': [f'Description for goal {i}' for i in range(1, 16)],
     'Date': [now.strftime('%Y-%m-%d')] * 15,
