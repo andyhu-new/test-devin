@@ -1,0 +1,9 @@
+Status Groups Todo List:
+
+- [ ] Completed
+- [ ] Completed Late
+- [ ] DNM
+- [ ] Cancelled
+- [ ] Red
+- [ ] Yellow
+- [ ] Green
