@@ -4,13 +4,13 @@ import sys
 
 def get_status_order():
     """Return the ordered list of status values."""
-    return ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow', 'Green', 'New']
+    return ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow', 'New']
 
 def is_standard_status(status):
     """Check if the status is one of the standard statuses."""
     return status in ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow']
 
-def is_within_past_days(date_str, days=21):
+def is_within_past_days(date_str, days=100):
     """Check if the given date is within the specified number of days from now."""
     if pd.isna(date_str):
         return False
@@ -47,18 +47,8 @@ def format_item(row):
     """Format a single item according to the specified markdown template."""
     markdown = []
     
-    # Header line with clickable ID link, bold formatting, and colored status for Red/Yellow/Green
-    status = row['Status']
-    if status == 'Red':
-        status_text = f'<span style="color: red">[{status}]</span>'
-    elif status == 'Yellow':
-        status_text = f'<span style="color: yellow">[{status}]</span>'
-    elif status == 'Green':
-        status_text = f'<span style="color: green">[{status}]</span>'
-    else:
-        status_text = f'[{status}]'
-    
-    header = f"__ {status_text} {row['Goal Set']} Goal [{row['ID']}](https://kingpin.amazon.com/#/items/{row['ID']}) {row['Title']} on {row['Date']}__"
+    # Header line
+    header = f"**[{row['Status']}] {row['Goal Set']} Goal [{row['ID']}] {row['Title']} on {row['Date']}**"
     markdown.append(header)
     
     # Description
@@ -115,7 +105,7 @@ def generate_markdown(input_file, output_file):
             if len(status_group) > 0:
                 # Add group header
                 display_status = status if status != 'New' else 'New'
-                markdown_content.append(f"### {display_status} ({len(status_group)} goals)\n")
+                markdown_content.append(f"### {display_status} ({len(status_group)})\n")
                 
                 # Add items
                 for _, row in status_group.iterrows():
@@ -135,6 +125,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: python generate_markdown.py <input_excel_file> <output_markdown_file>")
         sys.exit(1)
+    
     
     input_file = sys.argv[1]
     output_file = sys.argv[2]
