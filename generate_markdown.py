@@ -4,20 +4,20 @@ import sys
 
 def get_status_order():
     """Return the ordered list of status values."""
-    return ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow', 'Green', 'New']
+    return ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow', 'New']
 
 def is_standard_status(status):
     """Check if the status is one of the standard statuses."""
-    return status in ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow', 'Green']
+    return status in ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow']
 
-def is_within_past_weeks(date_str, weeks=3):
-    """Check if the given date is within the specified number of weeks from now."""
+def is_within_past_days(date_str, days=100):
+    """Check if the given date is within the specified number of days from now."""
     if pd.isna(date_str):
         return False
     try:
         date = pd.to_datetime(date_str)
-        weeks_ago = datetime.now() - timedelta(weeks=weeks)
-        return date >= weeks_ago
+        days_ago = datetime.now() - timedelta(days=days)
+        return date >= days_ago
     except:
         return False
 
@@ -31,15 +31,15 @@ def should_include_item(row):
     
     # For Completed, Completed Late, DNM, Cancelled - check Modified date
     if status in ['Completed', 'Completed Late', 'DNM', 'Cancelled']:
-        return is_within_past_weeks(row['Modified'])
+        return is_within_past_days(row['Modified'])
     
     # For Green items - check Created date
     if status == 'Green':
-        return is_within_past_weeks(row['Created'])
+        return is_within_past_days(row['Created'])
     
     # For non-standard statuses - check Created date
     if not is_standard_status(status):
-        return is_within_past_weeks(row['Created'])
+        return is_within_past_days(row['Created'])
     
     return False
 
@@ -47,8 +47,8 @@ def format_item(row):
     """Format a single item according to the specified markdown template."""
     markdown = []
     
-    # Header line with clickable ID link and bold formatting
-    header = f"__ [{row['Status']}] {row['Goal Set']} Goal [{row['ID']}](https://kingpin.amazon.com/#/items/{row['ID']}) {row['Title']} on {row['Date']}__"
+    # Header line
+    header = f"**[{row['Status']}] {row['Goal Set']} Goal [{row['ID']}] {row['Title']} on {row['Date']}**"
     markdown.append(header)
     
     # Description
@@ -105,7 +105,7 @@ def generate_markdown(input_file, output_file):
             if len(status_group) > 0:
                 # Add group header
                 display_status = status if status != 'New' else 'New'
-                markdown_content.append(f"### {display_status} ({len(status_group)} goals)\n")
+                markdown_content.append(f"### {display_status} ({len(status_group)})\n")
                 
                 # Add items
                 for _, row in status_group.iterrows():
@@ -125,6 +125,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: python generate_markdown.py <input_excel_file> <output_markdown_file>")
         sys.exit(1)
+    
     
     input_file = sys.argv[1]
     output_file = sys.argv[2]
