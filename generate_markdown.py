@@ -10,14 +10,14 @@ def is_standard_status(status):
     """Check if the status is one of the standard statuses."""
     return status in ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow', 'Green']
 
-def is_within_past_weeks(date_str, weeks=3):
-    """Check if the given date is within the specified number of weeks from now."""
+def is_within_past_days(date_str, days=21):
+    """Check if the given date is within the specified number of days from now."""
     if pd.isna(date_str):
         return False
     try:
         date = pd.to_datetime(date_str)
-        weeks_ago = datetime.now() - timedelta(weeks=weeks)
-        return date >= weeks_ago
+        days_ago = datetime.now() - timedelta(days=days)
+        return date >= days_ago
     except:
         return False
 
@@ -31,15 +31,15 @@ def should_include_item(row):
     
     # For Completed, Completed Late, DNM, Cancelled - check Modified date
     if status in ['Completed', 'Completed Late', 'DNM', 'Cancelled']:
-        return is_within_past_weeks(row['Modified'])
+        return is_within_past_days(row['Modified'])
     
     # For Green items - check Created date
     if status == 'Green':
-        return is_within_past_weeks(row['Created'])
+        return is_within_past_days(row['Created'])
     
     # For non-standard statuses - check Created date
     if not is_standard_status(status):
-        return is_within_past_weeks(row['Created'])
+        return is_within_past_days(row['Created'])
     
     return False
 
