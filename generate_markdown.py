@@ -8,7 +8,7 @@ def get_status_order():
 
 def is_standard_status(status):
     """Check if the status is one of the standard statuses."""
-    return status in ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow', 'Green']
+    return status in ['Completed', 'Completed Late', 'DNM', 'Cancelled', 'Red', 'Yellow']
 
 def is_within_past_days(date_str, days=21):
     """Check if the given date is within the specified number of days from now."""
