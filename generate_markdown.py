@@ -47,8 +47,18 @@ def format_item(row):
     """Format a single item according to the specified markdown template."""
     markdown = []
     
-    # Header line with clickable ID link and bold formatting
-    header = f"__ [{row['Status']}] {row['Goal Set']} Goal [{row['ID']}](https://kingpin.amazon.com/#/items/{row['ID']}) {row['Title']} on {row['Date']}__"
+    # Header line with clickable ID link, bold formatting, and colored status for Red/Yellow/Green
+    status = row['Status']
+    if status == 'Red':
+        status_text = f'<span style="color: red">[{status}]</span>'
+    elif status == 'Yellow':
+        status_text = f'<span style="color: yellow">[{status}]</span>'
+    elif status == 'Green':
+        status_text = f'<span style="color: green">[{status}]</span>'
+    else:
+        status_text = f'[{status}]'
+    
+    header = f"__ {status_text} {row['Goal Set']} Goal [{row['ID']}](https://kingpin.amazon.com/#/items/{row['ID']}) {row['Title']} on {row['Date']}__"
     markdown.append(header)
     
     # Description
